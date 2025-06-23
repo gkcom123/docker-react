@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  web-app:
+    container_name: nextjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app # Mount current directory into container
+      - /app/node_modules # Prevent node_modules overwrite
+    command: npm run dev # Hot reload with Next.js
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run test
+    depends_on:
+      - web-app
